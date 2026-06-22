@@ -253,7 +253,7 @@
             color: #fff;
         }
 
-        /* ===== SECTION 2 – CPF ===== */
+        /* ===== SECTION 2 – CNPJ ===== */
         .api-container {
             background: #1a1a2e;
             border-radius: 16px;
@@ -320,6 +320,8 @@
             color: #ccc;
             white-space: pre-wrap;
             word-break: break-all;
+            max-height: 400px;
+            overflow-y: auto;
         }
 
         .result-box.error {
@@ -329,6 +331,11 @@
 
         .result-box.loading {
             color: #00d4ff;
+        }
+
+        .result-box.success {
+            border-color: #0f0;
+            color: #0f0;
         }
 
         /* ===== SECTION 3 – CEP ===== */
@@ -366,117 +373,116 @@
             border-color: #00d4ff;
         }
 
-        /* ===== SECTION 4 – CHAT ===== */
-        .chat-container {
+        /* ===== SECTION 4 – CLIMA ===== */
+        .weather-card {
             background: #1a1a2e;
             border-radius: 16px;
-            overflow: hidden;
+            padding: 2rem;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
             max-width: 700px;
             display: flex;
             flex-direction: column;
-            height: 500px;
+            gap: 1.5rem;
         }
 
-        .chat-header {
-            background: linear-gradient(135deg, #00d4ff, #7b2ff7);
-            padding: 1rem 1.5rem;
-            color: #fff;
-            font-weight: 600;
+        .weather-current {
             display: flex;
             align-items: center;
-            gap: 10px;
-        }
-
-        .chat-header i {
-            font-size: 1.2rem;
-        }
-
-        .chat-messages {
-            flex: 1;
+            gap: 2rem;
+            flex-wrap: wrap;
+            background: #12121e;
+            border-radius: 12px;
             padding: 1.5rem;
-            overflow-y: auto;
+        }
+
+        .weather-temp {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .weather-temp span {
+            font-size: 1.2rem;
+            color: #888;
+        }
+
+        .weather-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+            flex: 1;
+        }
+
+        .weather-details .item {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
-            background: #16162a;
         }
 
-        .chat-messages .msg {
-            max-width: 85%;
-            padding: 0.8rem 1.2rem;
-            border-radius: 12px;
-            line-height: 1.5;
-            font-size: 0.9rem;
-            animation: msgIn 0.3s ease;
-        }
-
-        @keyframes msgIn {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .chat-messages .msg.user {
-            align-self: flex-end;
-            background: linear-gradient(135deg, #00d4ff, #0099cc);
-            color: #fff;
-            border-bottom-right-radius: 4px;
-        }
-
-        .chat-messages .msg.bot {
-            align-self: flex-start;
-            background: #2a2a3e;
-            color: #ddd;
-            border-bottom-left-radius: 4px;
-        }
-
-        .chat-messages .msg.bot.loading {
+        .weather-details .item .label {
+            font-size: 0.75rem;
             color: #888;
-            font-style: italic;
+            text-transform: uppercase;
         }
 
-        .chat-input-area {
+        .weather-details .item .value {
+            font-size: 1.1rem;
+            color: #ddd;
+            font-weight: 600;
+        }
+
+        .weather-city {
+            font-size: 1.5rem;
+            color: #00d4ff;
+            font-weight: 600;
+        }
+
+        .weather-search {
             display: flex;
-            padding: 1rem;
-            background: #1a1a2e;
-            border-top: 1px solid #2a2a3e;
-            gap: 0.5rem;
+            gap: 0.8rem;
+            flex-wrap: wrap;
         }
 
-        .chat-input-area input {
+        .weather-search input {
             flex: 1;
             padding: 0.8rem;
             background: #2a2a3e;
             border: 1px solid #3a3a4e;
             border-radius: 8px;
             color: #fff;
+            font-size: 1rem;
             outline: none;
+            min-width: 150px;
         }
 
-        .chat-input-area input:focus {
+        .weather-search input:focus {
             border-color: #00d4ff;
         }
 
-        .chat-input-area button {
-            padding: 0.8rem 1.2rem;
+        .weather-search button {
+            padding: 0.8rem 1.5rem;
             background: linear-gradient(135deg, #00d4ff, #7b2ff7);
             border: none;
             border-radius: 8px;
             color: #fff;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        .chat-input-area button:hover {
-            transform: scale(1.05);
+        .weather-search button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .weather-search button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .weather-error {
+            color: #f55;
+            font-size: 0.9rem;
         }
 
         /* ===== SCROLLBAR ===== */
@@ -544,6 +550,15 @@
             .cep-grid {
                 grid-template-columns: 1fr;
             }
+
+            .weather-current {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .weather-details {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
     <!-- Font Awesome for icons -->
@@ -560,9 +575,9 @@
         <ul class="nav-list">
             <li><a href="#" class="active" data-section="perfil"><i class="fas fa-user"></i><span> Perfil</span></a>
             </li>
-            <li><a href="#" data-section="cpf"><i class="fas fa-id-card"></i><span> CPF</span></a></li>
+            <li><a href="#" data-section="cnpj"><i class="fas fa-building"></i><span> CNPJ</span></a></li>
             <li><a href="#" data-section="cep"><i class="fas fa-map-pin"></i><span> CEP</span></a></li>
-            <li><a href="#" data-section="chat"><i class="fas fa-robot"></i><span> Chat</span></a></li>
+            <li><a href="#" data-section="clima"><i class="fas fa-cloud-sun"></i><span> Clima</span></a></li>
         </ul>
     </nav>
 
@@ -613,20 +628,20 @@
             </div>
         </section>
 
-        <!-- ===== SEÇÃO 2 – CPF ===== -->
-        <section id="cpf" class="section">
-            <h1>Consulta <span class="highlight">CPF</span></h1>
-            <p class="subtitle">API Brasil API — dados cadastrais básicos (públicos)</p>
+        <!-- ===== SEÇÃO 2 – CONSULTA CNPJ ===== -->
+        <section id="cnpj" class="section">
+            <h1>Consulta <span class="highlight">CNPJ</span></h1>
+            <p class="subtitle">API Brasil API — dados cadastrais completos de empresas (gratuita)</p>
 
             <div class="api-container">
-                <label for="cpfInput">Digite o CPF (apenas números, 11 dígitos)</label>
-                <input type="text" id="cpfInput" placeholder="Ex: 12345678909" maxlength="11" inputmode="numeric">
-                <button id="cpfBtn"><i class="fas fa-search"></i> Consultar CPF</button>
-                <div id="cpfResult" class="result-box">Os dados serão exibidos aqui...</div>
+                <label for="cnpjInput">Digite o CNPJ (apenas números, 14 dígitos)</label>
+                <input type="text" id="cnpjInput" placeholder="Ex: 00000000000191" maxlength="14" inputmode="numeric">
+                <button id="cnpjBtn"><i class="fas fa-search"></i> Consultar CNPJ</button>
+                <div id="cnpjResult" class="result-box">Os dados da empresa serão exibidos aqui...</div>
             </div>
         </section>
 
-        <!-- ===== SEÇÃO 3 – CEP ===== -->
+        <!-- ===== SEÇÃO 3 – CONSULTA CEP ===== -->
         <section id="cep" class="section">
             <h1>Consulta <span class="highlight">CEP</span></h1>
             <p class="subtitle">API ViaCEP — dados de endereço a partir do CEP</p>
@@ -639,27 +654,27 @@
             </div>
         </section>
 
-        <!-- ===== SEÇÃO 4 – CHAT ===== -->
-        <section id="chat" class="section">
-            <h1>Chat <span class="highlight">Gemini</span></h1>
-            <p class="subtitle">Converse com a inteligência artificial do Google</p>
+        <!-- ===== SEÇÃO 4 – CLIMA / TEMPO ===== -->
+        <section id="clima" class="section">
+            <h1>Clima <span class="highlight">Tempo</span></h1>
+            <p class="subtitle">API Open-Meteo — previsão do tempo em tempo real (gratuita, sem chave)</p>
 
-            <div class="chat-container">
-                <div class="chat-header">
-                    <i class="fas fa-robot"></i> Gemini AI
+            <div class="weather-card">
+                <div class="weather-search">
+                    <input type="text" id="cityInput" placeholder="Digite o nome da cidade..." value="Sinop">
+                    <input type="text" id="stateInput" placeholder="UF (ex: MT)" value="MT" maxlength="2" style="max-width:80px;">
+                    <button id="weatherBtn"><i class="fas fa-cloud-sun"></i> Buscar Clima</button>
                 </div>
-                <div class="chat-messages" id="chatMessages">
-                    <div class="msg bot">Olá! Sou o assistente Gemini. Pergunte o que quiser! 💬</div>
+
+                <div class="weather-current" id="weatherDisplay">
+                    <div style="text-align:center; width:100%; color:#888;">
+                        <i class="fas fa-search" style="font-size:2rem; margin-bottom:0.5rem;"></i>
+                        <p>Pesquise uma cidade para ver o clima atual</p>
+                    </div>
                 </div>
-                <div class="chat-input-area">
-                    <input type="text" id="chatInput" placeholder="Digite sua mensagem..." autocomplete="off">
-                    <button id="chatSendBtn"><i class="fas fa-paper-plane"></i></button>
-                </div>
+
+                <div id="weatherResult" class="result-box" style="display:none;"></div>
             </div>
-            <p style="color:#666; font-size:0.8rem; margin-top:0.5rem;">
-                <i class="fas fa-info-circle"></i> Para usar, insira sua chave da API Gemini no código (variável
-                <code>GEMINI_API_KEY</code>).
-            </p>
         </section>
 
     </main>
@@ -675,11 +690,9 @@
             link.addEventListener('click', e => {
                 e.preventDefault();
 
-                // Remove active de todos
                 navLinks.forEach(l => l.classList.remove('active'));
                 sections.forEach(s => s.classList.remove('active'));
 
-                // Ativa o clicado
                 link.classList.add('active');
                 const target = document.getElementById(link.dataset.section);
                 if (target) target.classList.add('active');
@@ -687,29 +700,32 @@
         });
 
         // ============================================================
-        // 2. API – CONSULTA CPF (Brasil API)
+        // 2. API – CONSULTA CNPJ (Brasil API)
         // ============================================================
-        const cpfBtn = document.getElementById('cpfBtn');
-        const cpfInput = document.getElementById('cpfInput');
-        const cpfResult = document.getElementById('cpfResult');
+        const cnpjBtn = document.getElementById('cnpjBtn');
+        const cnpjInput = document.getElementById('cnpjInput');
+        const cnpjResult = document.getElementById('cnpjResult');
 
-        cpfBtn.addEventListener('click', async () => {
-            const cpf = cpfInput.value.replace(/\D/g, '');
-            if (cpf.length !== 11) {
-                cpfResult.className = 'result-box error';
-                cpfResult.textContent = '❌ CPF inválido. Digite exatamente 11 números.';
+        cnpjBtn.addEventListener('click', async () => {
+            const cnpj = cnpjInput.value.replace(/\D/g, '');
+            if (cnpj.length !== 14) {
+                cnpjResult.className = 'result-box error';
+                cnpjResult.textContent = '❌ CNPJ inválido. Digite exatamente 14 números.';
                 return;
             }
 
-            cpfResult.className = 'result-box loading';
-            cpfResult.textContent = '🔄 Consultando...';
-            cpfBtn.disabled = true;
+            cnpjResult.className = 'result-box loading';
+            cnpjResult.textContent = '🔄 Consultando...';
+            cnpjBtn.disabled = true;
 
             try {
-                const resp = await fetch(`https://brasilapi.com.br/api/cpf/v1/${cpf}`, {
-                    method: 'GET',
-                    headers: { 'Content-Type': 'application/json' }
-                });
+                const resp = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`);
+                
+                if (resp.status === 404) {
+                    cnpjResult.className = 'result-box error';
+                    cnpjResult.textContent = '❌ CNPJ não encontrado na base.';
+                    return;
+                }
 
                 if (!resp.ok) {
                     const errText = await resp.text();
@@ -717,13 +733,13 @@
                 }
 
                 const data = await resp.json();
-                cpfResult.className = 'result-box';
-                cpfResult.textContent = JSON.stringify(data, null, 2);
+                cnpjResult.className = 'result-box success';
+                cnpjResult.textContent = JSON.stringify(data, null, 2);
             } catch (err) {
-                cpfResult.className = 'result-box error';
-                cpfResult.textContent = `❌ Erro na consulta: ${err.message}`;
+                cnpjResult.className = 'result-box error';
+                cnpjResult.textContent = `❌ Erro na consulta: ${err.message}`;
             } finally {
-                cpfBtn.disabled = false;
+                cnpjBtn.disabled = false;
             }
         });
 
@@ -756,8 +772,21 @@
                     return;
                 }
 
-                cepResult.className = 'result-box';
-                cepResult.textContent = JSON.stringify(data, null, 2);
+                cepResult.className = 'result-box success';
+                
+                // Formatação amigável
+                const formatted = [
+                    `📍 ${data.logradouro || 'Sem logradouro'}`,
+                    `🏘️ ${data.bairro || 'Sem bairro'}`,
+                    `🏙️ ${data.localidade} - ${data.uf}`,
+                    `📮 CEP: ${data.cep}`,
+                    `🔢 IBGE: ${data.ibge}`,
+                    `📋 DDD: ${data.ddd}`,
+                    `🔗 Dados completos:`,
+                    JSON.stringify(data, null, 2)
+                ].join('\n');
+                
+                cepResult.textContent = formatted;
             } catch (err) {
                 cepResult.className = 'result-box error';
                 cepResult.textContent = `❌ Erro na consulta: ${err.message}`;
@@ -767,81 +796,176 @@
         });
 
         // ============================================================
-        // 4. CHAT – GEMINI API
+        // 4. API – CLIMA (Open-Meteo - sem chave!)
         // ============================================================
-        // 🔑 COLOQUE SUA CHAVE DA API GEMINI AQUI
-        //    Obtenha em: https://aistudio.google.com/app/apikey
-        const GEMINI_API_KEY = 'retiradada_para_publicacao';
+        const weatherBtn = document.getElementById('weatherBtn');
+        const cityInput = document.getElementById('cityInput');
+        const stateInput = document.getElementById('stateInput');
+        const weatherDisplay = document.getElementById('weatherDisplay');
+        const weatherResult = document.getElementById('weatherResult');
 
-        const chatMessages = document.getElementById('chatMessages');
-        const chatInput = document.getElementById('chatInput');
-        const chatSendBtn = document.getElementById('chatSendBtn');
+        // Função para obter coordenadas via Open-Meteo Geocoding (gratuito, sem chave)
+        async function getCoordinates(city, state) {
+            const query = `${city},${state},Brazil`;
+            const resp = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=5&language=pt&format=json`);
+            if (!resp.ok) throw new Error('Falha ao buscar cidade');
+            const data = await resp.json();
+            
+            if (!data.results || data.results.length === 0) {
+                throw new Error('Cidade não encontrada');
+            }
 
-        function addMessage(text, sender) {
-            const div = document.createElement('div');
-            div.className = `msg ${sender}`;
-            div.textContent = text;
-            chatMessages.appendChild(div);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            return div;
+            // Tenta achar a que corresponde ao estado
+            let best = data.results[0];
+            if (state) {
+                const match = data.results.find(r => 
+                    r.country_code === 'BR' && 
+                    r.admin1 && r.admin1.toLowerCase().includes(state.toLowerCase())
+                );
+                if (match) best = match;
+            }
+            
+            return {
+                lat: best.latitude,
+                lon: best.longitude,
+                name: best.name,
+                country: best.country || 'Brasil',
+                admin1: best.admin1 || state
+            };
         }
 
-        async function sendToGemini(userText) {
-            if (!GEMINI_API_KEY || GEMINI_API_KEY === 'SUA_CHAVE_AQUI') {
-                addMessage('⚠️ Chave da API Gemini não configurada. Edite a variável GEMINI_API_KEY no código.', 'bot');
+        // Função para buscar clima atual
+        async function getWeather(lat, lon) {
+            const resp = await fetch(
+                `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+                `&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,wind_speed_10m,weather_code` +
+                `&timezone=auto`
+            );
+            if (!resp.ok) throw new Error('Falha ao buscar clima');
+            return await resp.json();
+        }
+
+        // Traduz o código de clima da OMM
+        function translateWeatherCode(code) {
+            const codes = {
+                0: 'Céu limpo', 1: 'Predominantemente limpo', 2: 'Parcialmente nublado',
+                3: 'Nublado', 45: 'Nevoeiro', 48: 'Nevoeiro com geada',
+                51: 'Garoa leve', 53: 'Garoa moderada', 55: 'Garoa intensa',
+                56: 'Garoa congelante leve', 57: 'Garoa congelante intensa',
+                61: 'Chuva fraca', 63: 'Chuva moderada', 65: 'Chuva forte',
+                66: 'Chuva congelante leve', 67: 'Chuva congelante forte',
+                71: 'Queda de neve fraca', 73: 'Queda de neve moderada', 75: 'Queda de neve forte',
+                77: 'Grãos de neve', 80: 'Pancadas de chuva fracas', 81: 'Pancadas de chuva moderadas',
+                82: 'Pancadas de chuva violentas', 85: 'Pancadas de neve fracas', 86: 'Pancadas de neve fortes',
+                95: 'Tempestade', 96: 'Tempestade com granizo leve', 99: 'Tempestade com granizo forte'
+            };
+            return codes[code] || 'Desconhecido';
+        }
+
+        // Ícone baseado no código do clima
+        function getWeatherIcon(code) {
+            if (code === 0) return 'fas fa-sun';
+            if (code <= 2) return 'fas fa-cloud-sun';
+            if (code <= 3) return 'fas fa-cloud';
+            if (code <= 48) return 'fas fa-smog';
+            if (code <= 67) return 'fas fa-cloud-rain';
+            if (code <= 86) return 'fas fa-snowflake';
+            return 'fas fa-bolt';
+        }
+
+        weatherBtn.addEventListener('click', async () => {
+            const city = cityInput.value.trim();
+            const state = stateInput.value.trim().toUpperCase();
+
+            if (!city) {
+                weatherDisplay.innerHTML = `<div class="weather-error"><i class="fas fa-exclamation-circle"></i> Digite o nome de uma cidade.</div>`;
                 return;
             }
 
-            const loadingMsg = addMessage('Pensando...', 'bot loading');
+            weatherDisplay.innerHTML = `<div style="text-align:center; color:#00d4ff;"><i class="fas fa-spinner fa-spin" style="font-size:2rem;"></i><p>Buscando clima...</p></div>`;
+            weatherBtn.disabled = true;
 
             try {
-                const resp = await fetch(
-                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
-                    {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            contents: [{
-                                parts: [{ text: userText }]
-                            }]
-                        })
-                    }
-                );
+                const coords = await getCoordinates(city, state);
+                const weather = await getWeather(coords.lat, coords.lon);
+                
+                const current = weather.current;
+                const temp = current.temperature_2m;
+                const feels = current.apparent_temperature;
+                const humidity = current.relative_humidity_2m;
+                const wind = current.wind_speed_10m;
+                const precip = current.precipitation;
+                const code = current.weather_code;
+                const weatherText = translateWeatherCode(code);
+                const icon = getWeatherIcon(code);
 
-                if (!resp.ok) {
-                    const errData = await resp.text();
-                    throw new Error(`Erro ${resp.status}: ${errData}`);
-                }
+                weatherDisplay.innerHTML = `
+                    <div style="text-align:center; min-width:120px;">
+                        <div style="font-size:3rem; color:#00d4ff; margin-bottom:0.5rem;">
+                            <i class="${icon}"></i>
+                        </div>
+                        <div class="weather-city">${coords.name}${coords.admin1 ? `, ${coords.admin1}` : ''}</div>
+                        <div style="color:#888; font-size:0.85rem;">${coords.country}</div>
+                    </div>
+                    <div style="text-align:center;">
+                        <div class="weather-temp">${temp}°<span>C</span></div>
+                        <div style="color:#aaa; font-size:0.9rem;">${weatherText}</div>
+                        <div style="color:#888; font-size:0.8rem;">Sensação térmica: ${feels}°C</div>
+                    </div>
+                    <div class="weather-details">
+                        <div class="item">
+                            <span class="label"><i class="fas fa-tint"></i> Umidade</span>
+                            <span class="value">${humidity}%</span>
+                        </div>
+                        <div class="item">
+                            <span class="label"><i class="fas fa-wind"></i> Vento</span>
+                            <span class="value">${wind} km/h</span>
+                        </div>
+                        <div class="item">
+                            <span class="label"><i class="fas fa-umbrella"></i> Precipitação</span>
+                            <span class="value">${precip} mm</span>
+                        </div>
+                        <div class="item">
+                            <span class="label"><i class="fas fa-thermometer-half"></i> Atualizado</span>
+                            <span class="value">${new Date().toLocaleTimeString('pt-BR')}</span>
+                        </div>
+                    </div>
+                `;
 
-                const data = await resp.json();
-                const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'Sem resposta.';
-                loadingMsg.remove();
-                addMessage(reply, 'bot');
+                // Mostra JSON completo expandido
+                weatherResult.style.display = 'block';
+                weatherResult.className = 'result-box';
+                weatherResult.textContent = JSON.stringify(weather, null, 2);
+
             } catch (err) {
-                loadingMsg.remove();
-                addMessage(`❌ Erro: ${err.message}`, 'bot');
+                weatherDisplay.innerHTML = `
+                    <div class="weather-error">
+                        <i class="fas fa-exclamation-triangle"></i> ${err.message}
+                    </div>
+                `;
+                weatherResult.style.display = 'none';
+            } finally {
+                weatherBtn.disabled = false;
             }
-        }
-
-        chatSendBtn.addEventListener('click', () => {
-            const text = chatInput.value.trim();
-            if (!text) return;
-            addMessage(text, 'user');
-            chatInput.value = '';
-            sendToGemini(text);
         });
 
-        chatInput.addEventListener('keydown', e => {
-            if (e.key === 'Enter') chatSendBtn.click();
-        });
+        // Permitir ENTER nos campos
+        weatherBtn.addEventListener('click', () => {});
+        cityInput.addEventListener('keydown', e => { if (e.key === 'Enter') weatherBtn.click(); });
+        stateInput.addEventListener('keydown', e => { if (e.key === 'Enter') weatherBtn.click(); });
 
         // ============================================================
-        // 5. MASCARA – APENAS NÚMEROS
+        // 5. MÁSCARA – APENAS NÚMEROS
         // ============================================================
-        [cpfInput, cepInput].forEach(inp => {
+        [cnpjInput, cepInput].forEach(inp => {
             inp.addEventListener('input', () => {
                 inp.value = inp.value.replace(/\D/g, '');
             });
+        });
+
+        // Carrega clima de Sinop/MT automaticamente ao abrir
+        window.addEventListener('load', () => {
+            setTimeout(() => weatherBtn.click(), 500);
         });
     </script>
 
