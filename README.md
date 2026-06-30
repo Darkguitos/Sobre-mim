@@ -155,7 +155,7 @@ Este projeto é open-source e foi desenvolvido para fins educacionais e de apres
 ## 👨‍💻 Autor
 
 **Gabriel Paulino de Oliveira**
-- 🎂 21 anos (08/05/2006)
+- 🎂 20 anos (08/05/2006)
 - 📍 Uberlândia, MG → Atualmente em Sinop, MT
 - 🎓 ADS - 1º Semestre — Fasipe
 - 💼 Foco: Análise de Dados / Cybersegurança
