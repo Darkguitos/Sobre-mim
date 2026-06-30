@@ -208,7 +208,8 @@ a {
 /* ===== GLASS PANELS ===== */
 .profile-card,
 .api-container,
-.weather-card {
+.weather-card,
+.projects-grid {
     position: relative;
     isolation: isolate;
     background:
@@ -223,7 +224,8 @@ a {
 
 .profile-card::before,
 .api-container::before,
-.weather-card::before {
+.weather-card::before,
+.projects-grid::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -237,7 +239,8 @@ a {
 
 .profile-card::after,
 .api-container::after,
-.weather-card::after {
+.weather-card::after,
+.projects-grid::after {
     content: "";
     position: absolute;
     inset: 10px;
@@ -249,9 +252,87 @@ a {
 
 .profile-card > *,
 .api-container > *,
-.weather-card > * {
+.weather-card > *,
+.projects-grid > * {
     position: relative;
     z-index: 1;
+}
+
+/* ===== SECTION 2 - PROJECTS ===== */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.2rem;
+}
+
+.project-card {
+    position: relative;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    padding: 1.4rem;
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+}
+
+.project-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, rgba(242, 200, 107, 0.16), transparent 35%);
+    pointer-events: none;
+}
+
+.project-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+.project-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    background: rgba(242, 200, 107, 0.12);
+    color: var(--gold-2);
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.project-card h2 {
+    font-size: 1.25rem;
+    color: #fff;
+    margin-bottom: 0.6rem;
+}
+
+.project-card p {
+    color: var(--muted);
+    line-height: 1.65;
+    margin-bottom: 1.2rem;
+}
+
+.project-card a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--gold-2);
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.project-card a:hover {
+    text-decoration: underline;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+    margin-top: 2rem;
+    padding: 1rem 1.25rem;
+    text-align: center;
+    color: var(--muted-2);
+    font-size: 0.9rem;
+    width: 100%;
 }
 
 /* ===== SECTION 1 - PERFIL ===== */
@@ -704,7 +785,7 @@ a {
 
     .nav-list {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(5, 1fr);
         height: 100%;
     }
 
@@ -794,6 +875,10 @@ a {
         padding: 0.65rem 0.8rem;
     }
 
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+
     .api-container,
     .weather-card {
         max-width: 100%;
@@ -848,6 +933,11 @@ a {
     .api-container,
     .weather-card {
         padding: 1rem;
+    }
+
+    .footer {
+        padding: 0.85rem 0.75rem 1.5rem;
+        font-size: 0.82rem;
     }
 
     .nav-list li a {
