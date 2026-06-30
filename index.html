@@ -1,128 +1,169 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gabriel Paulino - Portfolio</title>
+
     <link rel="stylesheet" href="styles.css">
-    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
-
-    <!-- ===== SIDEBAR ===== -->
-    <nav class="sidebar">
+    <nav class="sidebar" aria-label="Menu principal">
         <div class="logo">
             GP<span>Portfolio</span>
         </div>
+
         <ul class="nav-list">
-            <li><a href="#" class="active" data-section="perfil"><i class="fas fa-user"></i><span> Perfil</span></a>
+            <li>
+                <a href="#" class="active" data-section="perfil">
+                    <i class="fas fa-user"></i>
+                    <span>Perfil</span>
+                </a>
             </li>
-            <li><a href="#" data-section="cnpj"><i class="fas fa-building"></i><span> CNPJ</span></a></li>
-            <li><a href="#" data-section="cep"><i class="fas fa-map-pin"></i><span> CEP</span></a></li>
-            <li><a href="#" data-section="clima"><i class="fas fa-cloud-sun"></i><span> Clima</span></a></li>
+            <li>
+                <a href="#" data-section="cnpj">
+                    <i class="fas fa-building"></i>
+                    <span>CNPJ</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" data-section="cep">
+                    <i class="fas fa-map-pin"></i>
+                    <span>CEP</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" data-section="clima">
+                    <i class="fas fa-cloud-sun"></i>
+                    <span>Clima</span>
+                </a>
+            </li>
         </ul>
     </nav>
 
-    <!-- ===== MAIN CONTENT ===== -->
     <main class="main-content">
-
-        <!-- ===== SEÇÃO 1 – PERFIL ===== -->
         <section id="perfil" class="section active">
             <h1>Olá, eu sou <span class="highlight">Gabriel Paulino</span></h1>
             <p class="subtitle">Analista de Dados em formação &bull; ADS &bull; Sinop/MT</p>
 
             <div class="profile-card">
-                <div class="profile-avatar"><img src="avatar.png" alt="Avatar de Gabriel Paulino"></div>
+                <div class="profile-avatar">
+                    <img src="avatar.png" alt="Avatar de Gabriel Paulino">
+                </div>
+
                 <div class="profile-info">
                     <h2>Gabriel Paulino de Oliveira</h2>
-                    <span class="tag"><i class="fas fa-graduation-cap"></i> ADS - 1º Semestre</span>
+                    <span class="tag">
+                        <i class="fas fa-graduation-cap"></i>
+                        ADS - 1º Semestre
+                    </span>
+
                     <p>
-                        Apaixonado por tecnologia, dados e segurança digital. Atualmente cursando
-                        Análise e Desenvolvimento de Sistemas, focado em construir uma carreira sólida
-                        em <strong>Análise de Dados</strong> — mas com um pé firme na <strong>Cybersegurança</strong>,
-                        caso o coração decida mudar de rota.
+                        Apaixonado por tecnologia, dados e segurança digital. Atualmente curso
+                        Análise e Desenvolvimento de Sistemas e estou construindo uma base sólida
+                        em <strong>Análise de Dados</strong>, sem deixar de lado meu interesse por
+                        <strong>Cybersegurança</strong>.
                     </p>
+
                     <dl class="bio-detail">
                         <dt><i class="fas fa-calendar"></i> Idade</dt>
                         <dd>20 anos (08/05/2006)</dd>
+
                         <dt><i class="fas fa-map-marker-alt"></i> Origem</dt>
                         <dd>Uberlândia, Minas Gerais</dd>
+
                         <dt><i class="fas fa-graduation-cap"></i> Faculdade</dt>
                         <dd>Fasipe - Sinop/MT</dd>
+
                         <dt><i class="fas fa-laptop-code"></i> Área</dt>
                         <dd>Análise de Dados / Cybersegurança</dd>
+
                         <dt><i class="fas fa-heart"></i> Stack</dt>
                         <dd>HTML, JavaScript, CSS</dd>
                     </dl>
+
                     <div class="social-links">
-                        <a href="https://github.com/Darkguitos" target="_blank" class="github">
-                            <i class="fab fa-github"></i> GitHub
+                        <a href="https://github.com/Darkguitos" target="_blank" rel="noopener noreferrer" class="github">
+                            <i class="fab fa-github"></i>
+                            GitHub
                         </a>
-                        <a href="https://www.linkedin.com/in/darkguitos-undefined-65704223b/" target="_blank"
-                            class="linkedin">
-                            <i class="fab fa-linkedin-in"></i> LinkedIn
+                        <a href="https://www.linkedin.com/in/darkguitos-undefined-65704223b/" target="_blank" rel="noopener noreferrer" class="linkedin">
+                            <i class="fab fa-linkedin-in"></i>
+                            LinkedIn
                         </a>
-                        <a href="https://www.instagram.com/darkguitos/" target="_blank" class="instagram">
-                            <i class="fab fa-instagram"></i> Instagram
+                        <a href="https://www.instagram.com/darkguitos/" target="_blank" rel="noopener noreferrer" class="instagram">
+                            <i class="fab fa-instagram"></i>
+                            Instagram
                         </a>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ===== SEÇÃO 2 – CONSULTA CNPJ ===== -->
         <section id="cnpj" class="section">
             <h1>Consulta <span class="highlight">CNPJ</span></h1>
-            <p class="subtitle">API Brasil API — dados cadastrais completos de empresas (gratuita)</p>
+            <p class="subtitle">Dados cadastrais de empresas usando a Brasil API.</p>
 
             <div class="api-container">
                 <label for="cnpjInput">Digite o CNPJ (apenas números, 14 dígitos)</label>
                 <input type="text" id="cnpjInput" placeholder="Ex: 00000000000191" maxlength="14" inputmode="numeric">
-                <button id="cnpjBtn"><i class="fas fa-search"></i> Consultar CNPJ</button>
+
+                <button id="cnpjBtn">
+                    <i class="fas fa-search"></i>
+                    Consultar CNPJ
+                </button>
+
                 <div id="cnpjResult" class="result-box">Os dados da empresa serão exibidos aqui...</div>
             </div>
         </section>
 
-        <!-- ===== SEÇÃO 3 – CONSULTA CEP ===== -->
         <section id="cep" class="section">
             <h1>Consulta <span class="highlight">CEP</span></h1>
-            <p class="subtitle">API ViaCEP — dados de endereço a partir do CEP</p>
+            <p class="subtitle">Dados de endereço a partir do CEP usando a ViaCEP.</p>
 
             <div class="api-container">
                 <label for="cepInput">Digite o CEP (apenas números, 8 dígitos)</label>
                 <input type="text" id="cepInput" placeholder="Ex: 38400000" maxlength="8" inputmode="numeric">
-                <button id="cepBtn"><i class="fas fa-search"></i> Buscar Endereço</button>
+
+                <button id="cepBtn">
+                    <i class="fas fa-search"></i>
+                    Buscar endereço
+                </button>
+
                 <div id="cepResult" class="result-box">Os dados do endereço serão exibidos aqui...</div>
             </div>
         </section>
 
-        <!-- ===== SEÇÃO 4 – CLIMA / TEMPO ===== -->
         <section id="clima" class="section">
             <h1>Clima <span class="highlight">Tempo</span></h1>
-            <p class="subtitle">API Open-Meteo — previsão do tempo em tempo real (gratuita, sem chave)</p>
+            <p class="subtitle">Previsão atual em tempo real usando a Open-Meteo.</p>
 
             <div class="weather-card">
                 <div class="weather-search">
                     <input type="text" id="cityInput" placeholder="Digite o nome da cidade..." value="Sinop">
-                    <input type="text" id="stateInput" placeholder="UF (ex: MT)" value="MT" maxlength="2" style="max-width:80px;">
-                    <button id="weatherBtn"><i class="fas fa-cloud-sun"></i> Buscar Clima</button>
+                    <input type="text" id="stateInput" placeholder="UF" value="MT" maxlength="2" class="state-input">
+
+                    <button id="weatherBtn">
+                        <i class="fas fa-cloud-sun"></i>
+                        Buscar clima
+                    </button>
                 </div>
 
                 <div class="weather-current" id="weatherDisplay">
-                    <div style="text-align:center; width:100%; color:#888;">
-                        <i class="fas fa-search" style="font-size:2rem; margin-bottom:0.5rem;"></i>
+                    <div class="empty-weather">
+                        <i class="fas fa-search"></i>
                         <p>Pesquise uma cidade para ver o clima atual</p>
                     </div>
                 </div>
 
-                <div id="weatherResult" class="result-box" style="display:none;"></div>
+                <div id="weatherResult" class="result-box hidden"></div>
             </div>
         </section>
-
     </main>
+
     <script src="script.js"></script>
 </body>
 

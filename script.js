@@ -1,287 +1,328 @@
-﻿// ============================================================
-        // 1. NAVEGAÇÃO ENTRE SEÇÕES
-        // ============================================================
-        const navLinks = document.querySelectorAll('.nav-list a');
-        const sections = document.querySelectorAll('.section');
+const navLinks = document.querySelectorAll('.nav-list a');
+const sections = document.querySelectorAll('.section');
 
-        navLinks.forEach(link => {
-            link.addEventListener('click', e => {
-                e.preventDefault();
+const cnpjBtn = document.getElementById('cnpjBtn');
+const cnpjInput = document.getElementById('cnpjInput');
+const cnpjResult = document.getElementById('cnpjResult');
 
-                navLinks.forEach(l => l.classList.remove('active'));
-                sections.forEach(s => s.classList.remove('active'));
+const cepBtn = document.getElementById('cepBtn');
+const cepInput = document.getElementById('cepInput');
+const cepResult = document.getElementById('cepResult');
 
-                link.classList.add('active');
-                const target = document.getElementById(link.dataset.section);
-                if (target) target.classList.add('active');
-            });
-        });
+const weatherBtn = document.getElementById('weatherBtn');
+const cityInput = document.getElementById('cityInput');
+const stateInput = document.getElementById('stateInput');
+const weatherDisplay = document.getElementById('weatherDisplay');
+const weatherResult = document.getElementById('weatherResult');
 
-        // ============================================================
-        // 2. API – CONSULTA CNPJ (Brasil API)
-        // ============================================================
-        const cnpjBtn = document.getElementById('cnpjBtn');
-        const cnpjInput = document.getElementById('cnpjInput');
-        const cnpjResult = document.getElementById('cnpjResult');
+function showResult(element, type, message) {
+    element.className = `result-box ${type}`;
+    element.textContent = message;
+}
 
-        cnpjBtn.addEventListener('click', async () => {
-            const cnpj = cnpjInput.value.replace(/\D/g, '');
-            if (cnpj.length !== 14) {
-                cnpjResult.className = 'result-box error';
-                cnpjResult.textContent = '❌ CNPJ inválido. Digite exatamente 14 números.';
-                return;
-            }
+function onlyNumbers(value) {
+    return value.replace(/\D/g, '');
+}
 
-            cnpjResult.className = 'result-box loading';
-            cnpjResult.textContent = '🔄 Consultando...';
-            cnpjBtn.disabled = true;
+function changeSection(selectedLink) {
+    navLinks.forEach(link => link.classList.remove('active'));
+    sections.forEach(section => section.classList.remove('active'));
 
-            try {
-                const resp = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`);
-                
-                if (resp.status === 404) {
-                    cnpjResult.className = 'result-box error';
-                    cnpjResult.textContent = '❌ CNPJ não encontrado na base.';
-                    return;
-                }
+    selectedLink.classList.add('active');
 
-                if (!resp.ok) {
-                    const errText = await resp.text();
-                    throw new Error(`Erro ${resp.status}: ${errText}`);
-                }
+    const section = document.getElementById(selectedLink.dataset.section);
+    if (section) {
+        section.classList.add('active');
+    }
+}
 
-                const data = await resp.json();
-                cnpjResult.className = 'result-box success';
-                cnpjResult.textContent = JSON.stringify(data, null, 2);
-            } catch (err) {
-                cnpjResult.className = 'result-box error';
-                cnpjResult.textContent = `❌ Erro na consulta: ${err.message}`;
-            } finally {
-                cnpjBtn.disabled = false;
-            }
-        });
+navLinks.forEach(link => {
+    link.addEventListener('click', event => {
+        event.preventDefault();
+        changeSection(link);
+    });
+});
 
-        // ============================================================
-        // 3. API – CONSULTA CEP (ViaCEP)
-        // ============================================================
-        const cepBtn = document.getElementById('cepBtn');
-        const cepInput = document.getElementById('cepInput');
-        const cepResult = document.getElementById('cepResult');
+cnpjBtn.addEventListener('click', async () => {
+    const cnpj = onlyNumbers(cnpjInput.value);
 
-        cepBtn.addEventListener('click', async () => {
-            const cep = cepInput.value.replace(/\D/g, '');
-            if (cep.length !== 8) {
-                cepResult.className = 'result-box error';
-                cepResult.textContent = '❌ CEP inválido. Digite exatamente 8 números.';
-                return;
-            }
+    if (cnpj.length !== 14) {
+        showResult(cnpjResult, 'error', 'CNPJ inválido. Digite exatamente 14 números.');
+        return;
+    }
 
-            cepResult.className = 'result-box loading';
-            cepResult.textContent = '🔄 Consultando...';
-            cepBtn.disabled = true;
+    showResult(cnpjResult, 'loading', 'Consultando...');
+    cnpjBtn.disabled = true;
 
-            try {
-                const resp = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-                const data = await resp.json();
+    try {
+        const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`);
 
-                if (data.erro) {
-                    cepResult.className = 'result-box error';
-                    cepResult.textContent = '❌ CEP não encontrado.';
-                    return;
-                }
-
-                cepResult.className = 'result-box success';
-                
-                // Formatação amigável
-                const formatted = [
-                    `📍 ${data.logradouro || 'Sem logradouro'}`,
-                    `🏘️ ${data.bairro || 'Sem bairro'}`,
-                    `🏙️ ${data.localidade} - ${data.uf}`,
-                    `📮 CEP: ${data.cep}`,
-                    `🔢 IBGE: ${data.ibge}`,
-                    `📋 DDD: ${data.ddd}`,
-                    `🔗 Dados completos:`,
-                    JSON.stringify(data, null, 2)
-                ].join('\n');
-                
-                cepResult.textContent = formatted;
-            } catch (err) {
-                cepResult.className = 'result-box error';
-                cepResult.textContent = `❌ Erro na consulta: ${err.message}`;
-            } finally {
-                cepBtn.disabled = false;
-            }
-        });
-
-        // ============================================================
-        // 4. API – CLIMA (Open-Meteo - sem chave!)
-        // ============================================================
-        const weatherBtn = document.getElementById('weatherBtn');
-        const cityInput = document.getElementById('cityInput');
-        const stateInput = document.getElementById('stateInput');
-        const weatherDisplay = document.getElementById('weatherDisplay');
-        const weatherResult = document.getElementById('weatherResult');
-
-        // Função para obter coordenadas via Open-Meteo Geocoding (gratuito, sem chave)
-        async function getCoordinates(city, state) {
-            const query = `${city},${state},Brazil`;
-            const resp = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=5&language=pt&format=json`);
-            if (!resp.ok) throw new Error('Falha ao buscar cidade');
-            const data = await resp.json();
-            
-            if (!data.results || data.results.length === 0) {
-                throw new Error('Cidade não encontrada');
-            }
-
-            // Tenta achar a que corresponde ao estado
-            let best = data.results[0];
-            if (state) {
-                const match = data.results.find(r => 
-                    r.country_code === 'BR' && 
-                    r.admin1 && r.admin1.toLowerCase().includes(state.toLowerCase())
-                );
-                if (match) best = match;
-            }
-            
-            return {
-                lat: best.latitude,
-                lon: best.longitude,
-                name: best.name,
-                country: best.country || 'Brasil',
-                admin1: best.admin1 || state
-            };
+        if (response.status === 404) {
+            showResult(cnpjResult, 'error', 'CNPJ não encontrado na base.');
+            return;
         }
 
-        // Função para buscar clima atual
-        async function getWeather(lat, lon) {
-            const resp = await fetch(
-                `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
-                `&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,wind_speed_10m,weather_code` +
-                `&timezone=auto`
-            );
-            if (!resp.ok) throw new Error('Falha ao buscar clima');
-            return await resp.json();
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Erro ${response.status}: ${errorText}`);
         }
 
-        // Traduz o código de clima da OMM
-        function translateWeatherCode(code) {
-            const codes = {
-                0: 'Céu limpo', 1: 'Predominantemente limpo', 2: 'Parcialmente nublado',
-                3: 'Nublado', 45: 'Nevoeiro', 48: 'Nevoeiro com geada',
-                51: 'Garoa leve', 53: 'Garoa moderada', 55: 'Garoa intensa',
-                56: 'Garoa congelante leve', 57: 'Garoa congelante intensa',
-                61: 'Chuva fraca', 63: 'Chuva moderada', 65: 'Chuva forte',
-                66: 'Chuva congelante leve', 67: 'Chuva congelante forte',
-                71: 'Queda de neve fraca', 73: 'Queda de neve moderada', 75: 'Queda de neve forte',
-                77: 'Grãos de neve', 80: 'Pancadas de chuva fracas', 81: 'Pancadas de chuva moderadas',
-                82: 'Pancadas de chuva violentas', 85: 'Pancadas de neve fracas', 86: 'Pancadas de neve fortes',
-                95: 'Tempestade', 96: 'Tempestade com granizo leve', 99: 'Tempestade com granizo forte'
-            };
-            return codes[code] || 'Desconhecido';
+        const company = await response.json();
+        showResult(cnpjResult, 'success', JSON.stringify(company, null, 2));
+    } catch (error) {
+        showResult(cnpjResult, 'error', `Erro na consulta: ${error.message}`);
+    } finally {
+        cnpjBtn.disabled = false;
+    }
+});
+
+cepBtn.addEventListener('click', async () => {
+    const cep = onlyNumbers(cepInput.value);
+
+    if (cep.length !== 8) {
+        showResult(cepResult, 'error', 'CEP inválido. Digite exatamente 8 números.');
+        return;
+    }
+
+    showResult(cepResult, 'loading', 'Consultando...');
+    cepBtn.disabled = true;
+
+    try {
+        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        const address = await response.json();
+
+        if (address.erro) {
+            showResult(cepResult, 'error', 'CEP não encontrado.');
+            return;
         }
 
-        // Ícone baseado no código do clima
-        function getWeatherIcon(code) {
-            if (code === 0) return 'fas fa-sun';
-            if (code <= 2) return 'fas fa-cloud-sun';
-            if (code <= 3) return 'fas fa-cloud';
-            if (code <= 48) return 'fas fa-smog';
-            if (code <= 67) return 'fas fa-cloud-rain';
-            if (code <= 86) return 'fas fa-snowflake';
-            return 'fas fa-bolt';
+        const formattedAddress = [
+            `Endereço: ${address.logradouro || 'Sem logradouro'}`,
+            `Bairro: ${address.bairro || 'Sem bairro'}`,
+            `Cidade: ${address.localidade} - ${address.uf}`,
+            `CEP: ${address.cep}`,
+            `IBGE: ${address.ibge}`,
+            `DDD: ${address.ddd}`,
+            '',
+            'Dados completos:',
+            JSON.stringify(address, null, 2)
+        ].join('\n');
+
+        showResult(cepResult, 'success', formattedAddress);
+    } catch (error) {
+        showResult(cepResult, 'error', `Erro na consulta: ${error.message}`);
+    } finally {
+        cepBtn.disabled = false;
+    }
+});
+
+async function getCoordinates(city, state) {
+    const url = new URL('https://geocoding-api.open-meteo.com/v1/search');
+    url.searchParams.set('name', city);
+    url.searchParams.set('count', '5');
+    url.searchParams.set('language', 'pt');
+    url.searchParams.set('format', 'json');
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        throw new Error('Falha ao buscar cidade.');
+    }
+
+    const data = await response.json();
+
+    if (!data.results?.length) {
+        throw new Error('Cidade não encontrada.');
+    }
+
+    const cityFromBrazil = data.results.find(result => result.country_code === 'BR');
+    const cityFromState = data.results.find(result => {
+        const sameCountry = result.country_code === 'BR';
+        const sameState = result.admin1?.toLowerCase().includes(state.toLowerCase());
+        return sameCountry && sameState;
+    });
+
+    const bestMatch = cityFromState || cityFromBrazil || data.results[0];
+
+    return {
+        lat: bestMatch.latitude,
+        lon: bestMatch.longitude,
+        name: bestMatch.name,
+        country: bestMatch.country || 'Brasil',
+        admin1: bestMatch.admin1 || state
+    };
+}
+
+async function getWeather(lat, lon) {
+    const url = new URL('https://api.open-meteo.com/v1/forecast');
+    url.searchParams.set('latitude', lat);
+    url.searchParams.set('longitude', lon);
+    url.searchParams.set('current', [
+        'temperature_2m',
+        'relative_humidity_2m',
+        'apparent_temperature',
+        'precipitation',
+        'wind_speed_10m',
+        'weather_code'
+    ].join(','));
+    url.searchParams.set('timezone', 'auto');
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        throw new Error('Falha ao buscar clima.');
+    }
+
+    return response.json();
+}
+
+function translateWeatherCode(code) {
+    const weatherCodes = {
+        0: 'Céu limpo',
+        1: 'Predominantemente limpo',
+        2: 'Parcialmente nublado',
+        3: 'Nublado',
+        45: 'Nevoeiro',
+        48: 'Nevoeiro com geada',
+        51: 'Garoa leve',
+        53: 'Garoa moderada',
+        55: 'Garoa intensa',
+        56: 'Garoa congelante leve',
+        57: 'Garoa congelante intensa',
+        61: 'Chuva fraca',
+        63: 'Chuva moderada',
+        65: 'Chuva forte',
+        66: 'Chuva congelante leve',
+        67: 'Chuva congelante forte',
+        71: 'Queda de neve fraca',
+        73: 'Queda de neve moderada',
+        75: 'Queda de neve forte',
+        77: 'Grãos de neve',
+        80: 'Pancadas de chuva fracas',
+        81: 'Pancadas de chuva moderadas',
+        82: 'Pancadas de chuva violentas',
+        85: 'Pancadas de neve fracas',
+        86: 'Pancadas de neve fortes',
+        95: 'Tempestade',
+        96: 'Tempestade com granizo leve',
+        99: 'Tempestade com granizo forte'
+    };
+
+    return weatherCodes[code] || 'Desconhecido';
+}
+
+function getWeatherIcon(code) {
+    if (code === 0) return 'fas fa-sun';
+    if (code <= 2) return 'fas fa-cloud-sun';
+    if (code <= 3) return 'fas fa-cloud';
+    if (code <= 48) return 'fas fa-smog';
+    if (code <= 67) return 'fas fa-cloud-rain';
+    if (code <= 86) return 'fas fa-snowflake';
+
+    return 'fas fa-bolt';
+}
+
+function showWeatherLoading() {
+    weatherDisplay.innerHTML = `
+        <div class="weather-loading">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Buscando clima...</p>
+        </div>
+    `;
+}
+
+function renderWeather(coords, weather) {
+    const current = weather.current;
+    const weatherText = translateWeatherCode(current.weather_code);
+    const icon = getWeatherIcon(current.weather_code);
+
+    weatherDisplay.innerHTML = `
+        <div class="weather-summary">
+            <div class="weather-icon">
+                <i class="${icon}"></i>
+            </div>
+            <div class="weather-city">${coords.name}${coords.admin1 ? `, ${coords.admin1}` : ''}</div>
+            <div class="weather-country">${coords.country}</div>
+        </div>
+
+        <div class="weather-temperature">
+            <div class="weather-temp">${current.temperature_2m}°<span>C</span></div>
+            <div class="weather-description">${weatherText}</div>
+            <div class="weather-feels-like">Sensação térmica: ${current.apparent_temperature}°C</div>
+        </div>
+
+        <div class="weather-details">
+            <div class="item">
+                <span class="label"><i class="fas fa-tint"></i> Umidade</span>
+                <span class="value">${current.relative_humidity_2m}%</span>
+            </div>
+            <div class="item">
+                <span class="label"><i class="fas fa-wind"></i> Vento</span>
+                <span class="value">${current.wind_speed_10m} km/h</span>
+            </div>
+            <div class="item">
+                <span class="label"><i class="fas fa-umbrella"></i> Precipitação</span>
+                <span class="value">${current.precipitation} mm</span>
+            </div>
+            <div class="item">
+                <span class="label"><i class="fas fa-thermometer-half"></i> Atualizado</span>
+                <span class="value">${new Date().toLocaleTimeString('pt-BR')}</span>
+            </div>
+        </div>
+    `;
+
+    weatherResult.className = 'result-box';
+    weatherResult.textContent = JSON.stringify(weather, null, 2);
+}
+
+weatherBtn.addEventListener('click', async () => {
+    const city = cityInput.value.trim();
+    const state = stateInput.value.trim().toUpperCase();
+
+    if (!city) {
+        weatherDisplay.innerHTML = `
+            <div class="weather-error">
+                <i class="fas fa-exclamation-circle"></i>
+                Digite o nome de uma cidade.
+            </div>
+        `;
+        return;
+    }
+
+    showWeatherLoading();
+    weatherBtn.disabled = true;
+
+    try {
+        const coords = await getCoordinates(city, state);
+        const weather = await getWeather(coords.lat, coords.lon);
+        renderWeather(coords, weather);
+    } catch (error) {
+        weatherDisplay.innerHTML = `
+            <div class="weather-error">
+                <i class="fas fa-exclamation-triangle"></i>
+                ${error.message}
+            </div>
+        `;
+        weatherResult.className = 'result-box hidden';
+    } finally {
+        weatherBtn.disabled = false;
+    }
+});
+
+[cityInput, stateInput].forEach(input => {
+    input.addEventListener('keydown', event => {
+        if (event.key === 'Enter') {
+            weatherBtn.click();
         }
+    });
+});
 
-        weatherBtn.addEventListener('click', async () => {
-            const city = cityInput.value.trim();
-            const state = stateInput.value.trim().toUpperCase();
+[cnpjInput, cepInput].forEach(input => {
+    input.addEventListener('input', () => {
+        input.value = onlyNumbers(input.value);
+    });
+});
 
-            if (!city) {
-                weatherDisplay.innerHTML = `<div class="weather-error"><i class="fas fa-exclamation-circle"></i> Digite o nome de uma cidade.</div>`;
-                return;
-            }
-
-            weatherDisplay.innerHTML = `<div style="text-align:center; color:#00d4ff;"><i class="fas fa-spinner fa-spin" style="font-size:2rem;"></i><p>Buscando clima...</p></div>`;
-            weatherBtn.disabled = true;
-
-            try {
-                const coords = await getCoordinates(city, state);
-                const weather = await getWeather(coords.lat, coords.lon);
-                
-                const current = weather.current;
-                const temp = current.temperature_2m;
-                const feels = current.apparent_temperature;
-                const humidity = current.relative_humidity_2m;
-                const wind = current.wind_speed_10m;
-                const precip = current.precipitation;
-                const code = current.weather_code;
-                const weatherText = translateWeatherCode(code);
-                const icon = getWeatherIcon(code);
-
-                weatherDisplay.innerHTML = `
-                    <div style="text-align:center; min-width:120px;">
-                        <div style="font-size:3rem; color:#00d4ff; margin-bottom:0.5rem;">
-                            <i class="${icon}"></i>
-                        </div>
-                        <div class="weather-city">${coords.name}${coords.admin1 ? `, ${coords.admin1}` : ''}</div>
-                        <div style="color:#888; font-size:0.85rem;">${coords.country}</div>
-                    </div>
-                    <div style="text-align:center;">
-                        <div class="weather-temp">${temp}°<span>C</span></div>
-                        <div style="color:#aaa; font-size:0.9rem;">${weatherText}</div>
-                        <div style="color:#888; font-size:0.8rem;">Sensação térmica: ${feels}°C</div>
-                    </div>
-                    <div class="weather-details">
-                        <div class="item">
-                            <span class="label"><i class="fas fa-tint"></i> Umidade</span>
-                            <span class="value">${humidity}%</span>
-                        </div>
-                        <div class="item">
-                            <span class="label"><i class="fas fa-wind"></i> Vento</span>
-                            <span class="value">${wind} km/h</span>
-                        </div>
-                        <div class="item">
-                            <span class="label"><i class="fas fa-umbrella"></i> Precipitação</span>
-                            <span class="value">${precip} mm</span>
-                        </div>
-                        <div class="item">
-                            <span class="label"><i class="fas fa-thermometer-half"></i> Atualizado</span>
-                            <span class="value">${new Date().toLocaleTimeString('pt-BR')}</span>
-                        </div>
-                    </div>
-                `;
-
-                // Mostra JSON completo expandido
-                weatherResult.style.display = 'block';
-                weatherResult.className = 'result-box';
-                weatherResult.textContent = JSON.stringify(weather, null, 2);
-
-            } catch (err) {
-                weatherDisplay.innerHTML = `
-                    <div class="weather-error">
-                        <i class="fas fa-exclamation-triangle"></i> ${err.message}
-                    </div>
-                `;
-                weatherResult.style.display = 'none';
-            } finally {
-                weatherBtn.disabled = false;
-            }
-        });
-
-        // Permitir ENTER nos campos
-        weatherBtn.addEventListener('click', () => {});
-        cityInput.addEventListener('keydown', e => { if (e.key === 'Enter') weatherBtn.click(); });
-        stateInput.addEventListener('keydown', e => { if (e.key === 'Enter') weatherBtn.click(); });
-
-        // ============================================================
-        // 5. MÁSCARA – APENAS NÚMEROS
-        // ============================================================
-        [cnpjInput, cepInput].forEach(inp => {
-            inp.addEventListener('input', () => {
-                inp.value = inp.value.replace(/\D/g, '');
-            });
-        });
-
-        // Carrega clima de Sinop/MT automaticamente ao abrir
-        window.addEventListener('load', () => {
-            setTimeout(() => weatherBtn.click(), 500);
-        });
+window.addEventListener('load', () => {
+    setTimeout(() => weatherBtn.click(), 500);
+});
